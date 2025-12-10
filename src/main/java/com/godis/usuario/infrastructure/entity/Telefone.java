@@ -1,9 +1,7 @@
 package com.godis.usuario.infrastructure.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
 
 @Getter
 @Setter
@@ -11,6 +9,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity  // para apontar para o spring que isso é uma tabela do databases
 @Table(name = "telefone") // indicar o nome da tabela
+@Builder
 
 public class Telefone {
     @Id
