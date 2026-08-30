@@ -29,8 +29,8 @@ public class UsuarioService {
 
     }
 
-    public void emailExiste(String email) {                                                              //metodo responsavel por verificar se o email existe no database
-        try {
+    public void emailExiste(String email) {
+        try {                                                                                                           //bloco de tratamento de excessao -> verificando se tera um email existente
             boolean existe = verificaEmailExistente(email);
             if (existe) {
                 throw new ConflictException("email ja cadastrado" + email);                                             //throw new = lançar o erro (exception) automaticamente e para o progrma, o "new" é pq exception é um objeto
