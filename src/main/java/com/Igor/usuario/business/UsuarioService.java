@@ -5,6 +5,7 @@ import com.Igor.usuario.business.converter.UsuarioConverter;
 import com.Igor.usuario.business.dto.UsuarioDTO;
 import com.Igor.usuario.infrastructure.entity.Usuario;
 import com.Igor.usuario.infrastructure.exceptions.ConflictException;
+import com.Igor.usuario.infrastructure.exceptions.ResourceNotFoundException;
 import com.Igor.usuario.infrastructure.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -44,6 +45,16 @@ public class UsuarioService {
 
     public boolean verificaEmailExistente(String email) {                                                            //responsavel so por chamar o metodo na respository -> banco de dados
         return usuarioRepository.existsByEmail(email);
+    }
+
+    public Usuario buscarUsuarioPorEmail(String email) {
+        return usuarioRepository.findByEmail(email).orElseThrow(
+                () -> new ResourceNotFoundException("email nao encontrado" + email));
+    }
+
+    public void deletaUsuarioPorEmail(String email) {
+
+        usuarioRepository.deleteByEmail(email);
     }
 
 
