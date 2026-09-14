@@ -7,6 +7,7 @@ import com.Igor.usuario.infrastructure.entity.Usuario;
 import com.Igor.usuario.infrastructure.exceptions.ConflictException;
 import com.Igor.usuario.infrastructure.exceptions.ResourceNotFoundException;
 import com.Igor.usuario.infrastructure.repository.UsuarioRepository;
+import com.Igor.usuario.infrastructure.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,6 +20,7 @@ public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final UsuarioConverter usuarioConverter;
     private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
 
     public UsuarioDTO salvaUsuario (UsuarioDTO usuarioDTO) {
         emailExiste(usuarioDTO.getEmail());
@@ -56,6 +58,22 @@ public class UsuarioService {
 
         usuarioRepository.deleteByEmail(email);
     }
+    public  UsuarioDTO autalizaDadosUsuario (String token, UsuarioDTO dto){
+        //aqui buscamos o email do usuario atraves do token (tirando a obrigatoriedade do usuario passar o email)
+        String email = jwtUtil.extrairEmailToken(token.substring(7));
 
+        //criptografia de senha == se for nulo nao vai setar nada
+        dto.setSenha(dto.getSenha() != null ? passwordEncoder.encode(dto.getSenha()) : null );
+
+        //busca os dados do usuario no banco de dados, se nao encontrando da joga a excessao "n encontrado "
+        Usuario usuarioEntity = usuarioRepository.findByEmail(email).orElseThrow(() ->
+                new ResourceNotFoundException("Email não encontrado"));
+
+        //meclou os dados que recebemos na requisicao DTO com os dados no banco de dados
+        Usuario usuario = usuarioConverter.updateUsuario(dto, usuarioEntity);
+
+        //salvou os dados do usuario convertido e depois pegou o retorno e convertou para usuarioDTO
+        return usuarioConverter.paraUsuarioDTO(usuarioRepository.save(usuario));
+    }
 
 }

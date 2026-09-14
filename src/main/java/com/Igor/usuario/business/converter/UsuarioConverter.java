@@ -94,4 +94,17 @@ public class UsuarioConverter {
                 .ddd(telefoneDTO.getDdd())
                 .build();
     }
+
+    public Usuario updateUsuario (UsuarioDTO usuarioDTO, Usuario entity){
+        return Usuario.builder()
+                .id(entity.getId()) //nao vamos mudar nessa estrutura
+                .telefones(entity.getTelefones())
+                .enderecos(entity.getEnderecos())
+
+                .nome(usuarioDTO.getNome() != null ? usuarioDTO.getNome() : entity.getNome())
+                .senha(usuarioDTO.getSenha()!= null ? usuarioDTO.getSenha() : entity.getSenha())
+                .email(usuarioDTO.getEmail() != null ? usuarioDTO.getEmail() : entity.getEmail())
+        //usuarioDTO !=(é diferente de nulo) -> ? (se for) -> recebe o valor do usuarioDTO.getnome : (se nao) -> pega o valor da tabela    )
+                .build();
+    }
 }
