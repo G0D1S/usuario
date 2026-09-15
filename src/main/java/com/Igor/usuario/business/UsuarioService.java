@@ -2,10 +2,13 @@ package com.Igor.usuario.business;
 
 
 import com.Igor.usuario.business.converter.UsuarioConverter;
+import com.Igor.usuario.business.dto.EnderecoDTO;
 import com.Igor.usuario.business.dto.UsuarioDTO;
+import com.Igor.usuario.infrastructure.entity.Endereco;
 import com.Igor.usuario.infrastructure.entity.Usuario;
 import com.Igor.usuario.infrastructure.exceptions.ConflictException;
 import com.Igor.usuario.infrastructure.exceptions.ResourceNotFoundException;
+import com.Igor.usuario.infrastructure.repository.EnderecoRepository;
 import com.Igor.usuario.infrastructure.repository.UsuarioRepository;
 import com.Igor.usuario.infrastructure.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +24,7 @@ public class UsuarioService {
     private final UsuarioConverter usuarioConverter;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final EnderecoRepository enderecoRepository;
 
     public UsuarioDTO salvaUsuario (UsuarioDTO usuarioDTO) {
         emailExiste(usuarioDTO.getEmail());
@@ -74,6 +78,16 @@ public class UsuarioService {
 
         //salvou os dados do usuario convertido e depois pegou o retorno e convertou para usuarioDTO
         return usuarioConverter.paraUsuarioDTO(usuarioRepository.save(usuario));
+    }
+
+    public UsuarioDTO atualizaEndereco(Long idEndereco, EnderecoDTO enderecoDTO){
+        Endereco entity = enderecoRepository.findById(idEndereco).orElseThrow(() ->
+                new ResourceNotFoundException("Id nao encontrado " + idEndereco));
+
+
+        Endereco endereco= usuarioConverter.updateEndereco(enderecoDTO, entity);
+
+        return usuarioConverter.paraEnderecoDTO(enderecoRepository.save(endereco));
     }
 
 }
