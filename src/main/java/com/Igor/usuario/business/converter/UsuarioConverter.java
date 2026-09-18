@@ -86,7 +86,6 @@ public class UsuarioConverter {
                 .estado(endereco.getEstado())
                 .build();
 
-
     }
     public List<TelefoneDTO> paraListaTelefoneDTO (List<Telefone> telefoneDTOS){
         return telefoneDTOS.stream().map(this::paraTelefoneDTO).toList();
@@ -123,5 +122,13 @@ public class UsuarioConverter {
                 .estado(dto.getEstado() != null ? dto.getEstado() : entity.getEstado())
                 .build();
 
+    }
+
+    public Telefone updateTelefone (TelefoneDTO dto, Telefone entity){
+        return Telefone.builder()
+                .id(entity.getId())
+                .ddd(entity.getDdd() != null ? dto.getDdd() : entity.getDdd())
+                .numero(entity.getNumero() != null ? dto.getNumero() : entity.getNumero())
+                .build();
     }
 }
